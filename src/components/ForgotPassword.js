@@ -18,12 +18,12 @@ export default function ForgotPassword() {
       setError("")
       setLoading(true)
       await resetPassword(emailRef.current.value)
+      setLoading(false)
       setMessage("Check your inbox for further instructions")
     } catch {
+      setLoading(false)
       setError("Failed to reset password")
     }
-
-    setLoading(false)
   }
 
   return (
@@ -38,7 +38,7 @@ export default function ForgotPassword() {
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
+            <Button disabled={loading} className="w-100 mt-4" type="submit">
               Reset Password
             </Button>
           </Form>

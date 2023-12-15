@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
   }
 
   function updateEmail(email) {
-    return currentUser.updateEmail(email)
+    return currentUser.verifyBeforeUpdateEmail(email)
   }
 
   function updatePassword(password) {
