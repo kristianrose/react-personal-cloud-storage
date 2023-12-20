@@ -1,4 +1,5 @@
 import React from "react"
+import { Button, Form } from "react-bootstrap"
 
 export default function TaskItem({
   id,
@@ -17,19 +18,24 @@ export default function TaskItem({
           marginTop: "10px",
         }}
       >
-        <label style={{}}>
-          <input
+        <Form>
+          <Form.Check
             type="checkbox"
             checked={completed}
+            id={"default-checkbox"}
             onChange={() => handleComplete(id, completed)}
+            label={
+              completed ? (
+                <s className="completed">{title}</s>
+              ) : (
+                <span>{title}</span>
+              )
+            }
           />
-          {completed ? (
-            <s className="completed">{title}</s>
-          ) : (
-            <span>{title}</span>
-          )}
-        </label>
-        <button onClick={() => handleDelete(id)}>Delete</button>
+        </Form>
+        <Button variant="danger" onClick={() => handleDelete(id)}>
+          Delete
+        </Button>
       </div>
     </>
   )

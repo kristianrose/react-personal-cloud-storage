@@ -14,6 +14,7 @@ import {
 import { db } from "../firebase"
 import { useAuth } from "../contexts/AuthContext"
 import TaskItem from "../components/TaskItem"
+import { Button, Form, InputGroup } from "react-bootstrap"
 
 export default function Home() {
   const { currentUser } = useAuth()
@@ -21,6 +22,7 @@ export default function Home() {
   const [title, setTitle] = useState("")
   const [tasks, setTasks] = useState([])
   const [completedTasksCount, setCompletedTasksCount] = useState(0)
+  const [activeTasksCount, setActiveTasksCount] = useState(0)
 
   useEffect(() => {
     const c = collection(db, `users/${currentUser.uid}/tasks`)
@@ -34,10 +36,13 @@ export default function Home() {
       // onSnapshot so I can get data update real-time
       const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
         let completedCount = 0
+        let activeCount = 0
         const tasks = querySnapshot.docs.map((doc) => {
           const data = doc.data()
           if (data.completed) {
             completedCount++
+          } else {
+            activeCount++
           }
           return {
             //return data compatible with data types specified in the tasks variable
@@ -48,6 +53,7 @@ export default function Home() {
         })
         setTasks(tasks)
         setCompletedTasksCount(completedCount)
+        setActiveTasksCount(activeCount)
       })
       return () => {
         unsubscribe()
@@ -135,16 +141,21 @@ export default function Home() {
             width: "300px",
           }}
         >
-          <p>Todo List App</p>
-
-          <form
+          <Form
             onSubmit={handleSubmit}
             style={{
               marginTop: "5px",
             }}
           >
-            <input value={title} onChange={(e) => setTitle(e.target.value)} />
-          </form>
+            <InputGroup className="mb-3">
+              <Form.Control
+                placeholder="Enter new task"
+                aria-label="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </InputGroup>
+          </Form>
           <div
             style={{
               marginTop: "10px",
@@ -174,9 +185,15 @@ export default function Home() {
                 justifyContent: "space-between",
               }}
             >
-              <button onClick={handleFetchAll}>All</button>
-              <button onClick={() => handleFilter(false)}>Active</button>
-              <button onClick={() => handleFilter(true)}>Completed</button>
+              <Button variant="secondary" onClick={handleFetchAll}>
+                All
+              </Button>
+              <Button variant="secondary" onClick={() => handleFilter(false)}>
+                Active ({activeTasksCount})
+              </Button>
+              <Button variant="secondary" onClick={() => handleFilter(true)}>
+                Completed ({completedTasksCount})
+              </Button>
             </div>
 
             <div
@@ -186,8 +203,9 @@ export default function Home() {
                 marginTop: "10px",
               }}
             >
-              <button>{completedTasksCount} items left</button>
-              <button onClick={handleClearCompleted}>Clear Completed</button>
+              <Button variant="primary" onClick={handleClearCompleted}>
+                Clear Completed
+              </Button>
             </div>
           </footer>
         </div>
