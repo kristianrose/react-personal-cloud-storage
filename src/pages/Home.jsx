@@ -1,5 +1,5 @@
 import Navbar from "../components/NavBar"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   collection,
   addDoc,
@@ -19,7 +19,7 @@ import { Button, Form, InputGroup } from "react-bootstrap"
 export default function Home() {
   const { currentUser } = useAuth()
   const [docRef, setDocRef] = useState()
-  const [title, setTitle] = useState("")
+  const titleRef = useRef()
   const [tasks, setTasks] = useState([])
   const [completedTasksCount, setCompletedTasksCount] = useState(0)
   const [activeTasksCount, setActiveTasksCount] = useState(0)
@@ -63,13 +63,14 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const title = titleRef.current.value
     if (title !== "") {
       try {
         await addDoc(docRef, {
           title,
           completed: false,
         })
-        setTitle("")
+        titleRef.current.value = ""
         console.log("Task successfully added")
       } catch (e) {
         console.log("Unsuccessful", e)
@@ -151,8 +152,7 @@ export default function Home() {
               <Form.Control
                 placeholder="Enter new task"
                 aria-label="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                ref={titleRef}
               />
             </InputGroup>
           </Form>
