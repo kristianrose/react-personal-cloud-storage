@@ -6,19 +6,20 @@ export default function TabBar({ tabItems, handleSelectTab }) {
 
   return (
     <>
-      <Nav
-        variant="tabs"
-        activeKey={activeKey}
-        onSelect={(key) => {
-          setActiveKey(key)
-          handleSelectTab(key)
-        }}
-      >
+      <Nav variant="tabs" activeKey={activeKey}>
         {tabItems.length > 0 &&
           tabItems.map((tab) => {
             return (
               <Nav.Item key={tab.id}>
-                <Nav.Link eventKey={tab.id}>{tab.label}</Nav.Link>
+                <Nav.Link
+                  eventKey={tab.id}
+                  onClick={() => {
+                    setActiveKey(tab.id)
+                    tab.action()
+                  }}
+                >
+                  {tab.label}
+                </Nav.Link>
               </Nav.Item>
             )
           })}

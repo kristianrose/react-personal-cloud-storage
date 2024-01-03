@@ -89,31 +89,23 @@ export default function Home() {
     await deleteDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`))
   }
 
-  const tabItemsIds = {
-    all: 0,
-    active: 1,
-    completed: 2,
-  }
-
   const tabItems = [
-    { id: tabItemsIds.all, label: "All" },
-    { id: tabItemsIds.active, label: `Active (${activeTasksCount})` },
-    { id: tabItemsIds.completed, label: `Completed (${completedTasksCount})` },
+    {
+      id: 0,
+      label: "All",
+      action: () => handleFetchAll(),
+    },
+    {
+      id: 1,
+      label: `Active (${activeTasksCount})`,
+      action: () => handleFilter(false),
+    },
+    {
+      id: 2,
+      label: `Completed (${completedTasksCount})`,
+      action: () => handleFilter(true),
+    },
   ]
-
-  const handleSelectTab = (tabId) => {
-    switch (Number.parseInt(tabId)) {
-      case tabItemsIds.active:
-        handleFilter(false)
-        break
-      case tabItemsIds.completed:
-        handleFilter(true)
-        break
-      default:
-        handleFetchAll()
-        break
-    }
-  }
 
   const handleFilter = async (val) => {
     const q = query(docRef, where("completed", "==", val))
@@ -179,7 +171,7 @@ export default function Home() {
               />
             </InputGroup>
           </Form>
-          <TabBar tabItems={tabItems} handleSelectTab={handleSelectTab} />
+          <TabBar tabItems={tabItems} />
           <div
             style={{
               marginTop: "10px",
