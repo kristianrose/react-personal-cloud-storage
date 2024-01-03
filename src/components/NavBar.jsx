@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container"
 import Navbar from "react-bootstrap/Navbar"
 import Dropdown from "react-bootstrap/Dropdown"
 
-export default function Dashboard() {
+export default function NavBar() {
   const [error, setError] = useState("")
   const { currentUser, logout } = useAuth()
   const history = useHistory()

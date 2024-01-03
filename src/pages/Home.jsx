@@ -15,6 +15,7 @@ import { db } from "../firebase"
 import { useAuth } from "../contexts/AuthContext"
 import TaskItem from "../components/TaskItem"
 import { Button, Form, InputGroup } from "react-bootstrap"
+import TabBar from "../components/TabBar"
 
 export default function Home() {
   const { currentUser } = useAuth()
@@ -88,19 +89,43 @@ export default function Home() {
     await deleteDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`))
   }
 
+  const tabItemsIds = {
+    all: 0,
+    active: 1,
+    completed: 2,
+  }
+
+  const tabItems = [
+    { id: tabItemsIds.all, label: "All" },
+    { id: tabItemsIds.active, label: `Active (${activeTasksCount})` },
+    { id: tabItemsIds.completed, label: `Completed (${completedTasksCount})` },
+  ]
+
+  const handleSelectTab = (tabId) => {
+    switch (Number.parseInt(tabId)) {
+      case tabItemsIds.active:
+        handleFilter(false)
+        break
+      case tabItemsIds.completed:
+        handleFilter(true)
+        break
+      default:
+        handleFetchAll()
+        break
+    }
+  }
+
   const handleFilter = async (val) => {
-    const q = query(docRef, where("completed", "==", val)) //get collection with respect to if completed is true or not
+    const q = query(docRef, where("completed", "==", val))
     const querySnapshot = await getDocs(q)
     const tasks = querySnapshot.docs.map((doc) => {
       const data = doc.data()
       return {
-        //return data compatible with data types specified in the tasks variable
         title: data.title,
         completed: data.completed,
         id: doc.id,
       }
     })
-    // const tasks = mapQuerySnapshotToTasks(querySnapshot) //fetch the document in the collection
     setTasks(tasks)
   }
 
@@ -109,18 +134,16 @@ export default function Home() {
     const tasks = querySnapshot.docs.map((doc) => {
       const data = doc.data()
       return {
-        //return data compatible with data types specified in the tasks variable
         title: data.title,
         completed: data.completed,
         id: doc.id,
       }
     })
-    // const tasks = mapQuerySnapshotToTasks(querySnapshot)
     setTasks(tasks)
   }
 
   const handleClearCompleted = async () => {
-    const q = await getDocs(query(docRef, where("completed", "==", true))) //get the document so we can loop through
+    const q = await getDocs(query(docRef, where("completed", "==", true)))
     q.forEach(async (doc) => {
       //loop through
       await deleteDoc(doc.ref)
@@ -156,12 +179,13 @@ export default function Home() {
               />
             </InputGroup>
           </Form>
+          <TabBar tabItems={tabItems} handleSelectTab={handleSelectTab} />
           <div
             style={{
               marginTop: "10px",
             }}
           >
-            {tasks.length > 0 && //since tasks may be undefined
+            {tasks.length > 0 &&
               tasks.map((task) => {
                 return (
                   <TaskItem
@@ -179,23 +203,6 @@ export default function Home() {
               marginTop: "10px",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <Button variant="secondary" onClick={handleFetchAll}>
-                All
-              </Button>
-              <Button variant="secondary" onClick={() => handleFilter(false)}>
-                Active ({activeTasksCount})
-              </Button>
-              <Button variant="secondary" onClick={() => handleFilter(true)}>
-                Completed ({completedTasksCount})
-              </Button>
-            </div>
-
             <div
               style={{
                 display: "flex",
