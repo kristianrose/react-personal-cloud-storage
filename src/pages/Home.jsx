@@ -11,10 +11,10 @@ import {
   where,
   getDocs,
 } from "firebase/firestore"
-import { db } from "../firebase"
+import { auth, db } from "../firebase"
 import { useAuth } from "../contexts/AuthContext"
 import TaskItem from "../components/TaskItem"
-import { Button, Form, InputGroup } from "react-bootstrap"
+import { Button, Card, Form, InputGroup, ListGroup } from "react-bootstrap"
 import TabBar from "../components/TabBar"
 
 export default function Home() {
@@ -143,17 +143,24 @@ export default function Home() {
   }
 
   return (
-    <>
+    <Card
+      style={{
+        maxHeight: "95vh",
+      }}
+    >
       <Navbar />
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignContent: "center",
+          overflow: "auto",
         }}
       >
         <div
           style={{
+            display: "flex",
+            flexDirection: "column",
             width: "300px",
           }}
         >
@@ -172,27 +179,30 @@ export default function Home() {
             </InputGroup>
           </Form>
           <TabBar tabItems={tabItems} />
-          <div
+          <ListGroup
             style={{
               marginTop: "10px",
+              overflow: "auto",
             }}
           >
             {tasks.length > 0 &&
               tasks.map((task) => {
                 return (
-                  <TaskItem
-                    key={task.id}
-                    {...task}
-                    handleComplete={handleComplete}
-                    handleDelete={handleDelete}
-                  />
+                  <ListGroup.Item key={task.id}>
+                    <TaskItem
+                      {...task}
+                      handleComplete={handleComplete}
+                      handleDelete={handleDelete}
+                    />
+                  </ListGroup.Item>
                 )
               })}
-          </div>
+          </ListGroup>
           {/* footer */}
           <footer
             style={{
               marginTop: "10px",
+              marginBottom: "10px",
             }}
           >
             <div
@@ -209,6 +219,6 @@ export default function Home() {
           </footer>
         </div>
       </div>
-    </>
+    </Card>
   )
 }

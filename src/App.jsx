@@ -13,8 +13,11 @@ import UpdatePassword from "./pages/UpdatePassword"
 function App() {
   return (
     <Container
-      className="d-flex"
-      style={{ minHeight: "100vh", padding: 0 }}
+      className="d-flex justify-content-center mt-100"
+      style={{
+        height: "100vh",
+        padding: 10,
+      }}
     >
       <div className="w-100" style={{ maxWidth: "600px" }}>
         <Router>
@@ -22,7 +25,10 @@ function App() {
             <Switch>
               <PrivateRoute exact path="/" component={Home} />
               <PrivateRoute path="/update-email" component={UpdateEmail} />
-              <PrivateRoute path="/update-password" component={UpdatePassword} />
+              <PrivateRoute
+                path="/update-password"
+                component={UpdatePassword}
+              />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
               <Route path="/forgot-password" component={ForgotPassword} />
