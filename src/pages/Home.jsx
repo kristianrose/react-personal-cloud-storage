@@ -11,7 +11,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore"
-import { auth, db } from "../firebase"
+import { db } from "../firebase"
 import { useAuth } from "../contexts/AuthContext"
 import TaskItem from "../components/TaskItem"
 import { Button, Card, Form, InputGroup, ListGroup } from "react-bootstrap"
@@ -21,7 +21,8 @@ export default function Home() {
   const { currentUser } = useAuth()
   const [docRef, setDocRef] = useState()
   const titleRef = useRef()
-  const [tasks, setTasks] = useState([])
+  const [filteredTasks, setFilteredTasks] = useState([])
+  const [filterOption, setFilterOption] = useState()
   const [completedTasksCount, setCompletedTasksCount] = useState(0)
   const [activeTasksCount, setActiveTasksCount] = useState(0)
 
@@ -33,8 +34,6 @@ export default function Home() {
 
   useEffect(() => {
     if (docRef) {
-      console.log("onSnapshot so I can get data update real-time", docRef)
-      // onSnapshot so I can get data update real-time
       const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
         let completedCount = 0
         let activeCount = 0
@@ -52,7 +51,11 @@ export default function Home() {
             id: doc.id,
           }
         })
-        setTasks(tasks)
+        setFilteredTasks(
+          filterOption === undefined
+            ? tasks
+            : tasks.filter((task) => task.completed === filterOption)
+        )
         setCompletedTasksCount(completedCount)
         setActiveTasksCount(activeCount)
       })
@@ -60,7 +63,7 @@ export default function Home() {
         unsubscribe()
       }
     }
-  }, [docRef])
+  }, [docRef, filterOption])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -89,51 +92,6 @@ export default function Home() {
     await deleteDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`))
   }
 
-  const tabItems = [
-    {
-      id: 0,
-      label: "All",
-      action: () => handleFetchAll(),
-    },
-    {
-      id: 1,
-      label: `Active (${activeTasksCount})`,
-      action: () => handleFilter(false),
-    },
-    {
-      id: 2,
-      label: `Completed (${completedTasksCount})`,
-      action: () => handleFilter(true),
-    },
-  ]
-
-  const handleFilter = async (val) => {
-    const q = query(docRef, where("completed", "==", val))
-    const querySnapshot = await getDocs(q)
-    const tasks = querySnapshot.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        title: data.title,
-        completed: data.completed,
-        id: doc.id,
-      }
-    })
-    setTasks(tasks)
-  }
-
-  const handleFetchAll = async () => {
-    const querySnapshot = await getDocs(docRef)
-    const tasks = querySnapshot.docs.map((doc) => {
-      const data = doc.data()
-      return {
-        title: data.title,
-        completed: data.completed,
-        id: doc.id,
-      }
-    })
-    setTasks(tasks)
-  }
-
   const handleClearCompleted = async () => {
     const q = await getDocs(query(docRef, where("completed", "==", true)))
     q.forEach(async (doc) => {
@@ -141,6 +99,24 @@ export default function Home() {
       await deleteDoc(doc.ref)
     })
   }
+
+  const tabItems = [
+    {
+      id: 0,
+      label: "All",
+      action: () => setFilterOption(),
+    },
+    {
+      id: 1,
+      label: `Active (${activeTasksCount})`,
+      action: () => setFilterOption(false),
+    },
+    {
+      id: 2,
+      label: `Completed (${completedTasksCount})`,
+      action: () => setFilterOption(true),
+    },
+  ]
 
   return (
     <Card
@@ -185,8 +161,8 @@ export default function Home() {
               overflow: "auto",
             }}
           >
-            {tasks.length > 0 &&
-              tasks.map((task) => {
+            {filteredTasks.length > 0 &&
+              filteredTasks.map((task) => {
                 return (
                   <ListGroup.Item key={task.id}>
                     <TaskItem
