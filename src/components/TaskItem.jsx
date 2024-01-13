@@ -1,3 +1,4 @@
+import { X } from "lucide-react"
 import React from "react"
 import { Button, Form } from "react-bootstrap"
 
@@ -33,8 +34,8 @@ export default function TaskItem({
             }
           />
         </Form>
-        <Button variant="danger" onClick={() => handleDelete(id)}>
-          Delete
+        <Button variant="light" onClick={() => handleDelete(id)}>
+          <X color="#6c757d" />
         </Button>
       </div>
     </>
