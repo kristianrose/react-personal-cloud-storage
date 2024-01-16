@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^5.3.2",
     "firebase": "^10.7.1",
     "lucide-react": "^0.309.0",
-    "react": "^17.0.2",
-    "react-bootstrap": "^2.9.1",
+    "react": "^18.0.2",
     "react-dom": "^17.0.2",
+    "react-hook-form": "^7.49.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.0"
   },
@@ -35,5 +34,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "daisyui": "^4.6.0",
+    "postcss": "^8.4.33",
+    "prettier": "^3.2.2",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.1"
   }
 }
