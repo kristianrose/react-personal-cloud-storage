@@ -1,8 +1,8 @@
-// import { useRef, useState } from "react"
+import React from "react";
 // import { Form, Button, Card, Alert } from "react-bootstrap"
 // import { useAuth } from "../contexts/AuthContext"
-import { Link } from "react-router-dom";
-import { ClipboardCheck } from "lucide-react";
+// import { Link } from 'react-router-dom'
+// import { ClipboardCheck } from 'lucide-react'
 import { AuthCard } from "../components/AuthCard";
 import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
 import { AuthHeader } from "../components/AuthHeader";

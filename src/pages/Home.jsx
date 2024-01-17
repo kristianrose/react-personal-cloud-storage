@@ -1,5 +1,6 @@
-import Navbar from "../components/NavBar"
-import { useState, useEffect, useRef } from "react"
+// import Navbar from "../components/NavBar"
+// import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   collection,
   addDoc,
@@ -10,191 +11,269 @@ import {
   query,
   where,
   getDocs,
-} from "firebase/firestore"
-import { db } from "../firebase"
-import { useAuth } from "../contexts/AuthContext"
-import TaskItem from "../components/TaskItem"
-import { Button, Card, Form, InputGroup, ListGroup } from "react-bootstrap"
-import TabBar from "../components/TabBar"
+} from "firebase/firestore";
+import { db } from "../firebase";
+import { useAuth } from "../contexts/AuthContext";
+// import TabBar from "../components/TabBar"
+import { AuthCard } from "../components/AuthCard";
+import { AuthHeader } from "../components/AuthHeader";
+import { useForm } from "react-hook-form";
+import TaskItem from "../components/TaskItem";
 
 export default function Home() {
-  const { currentUser } = useAuth()
-  const [docRef, setDocRef] = useState()
-  const titleRef = useRef()
-  const [filteredTasks, setFilteredTasks] = useState([])
-  const [filterOption, setFilterOption] = useState()
-  const [completedTasksCount, setCompletedTasksCount] = useState(0)
-  const [activeTasksCount, setActiveTasksCount] = useState(0)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+  const [showErrors, setShowErrors] = useState(false);
+
+  const { currentUser } = useAuth();
+  const [docRef, setDocRef] = useState();
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [filterOption, setFilterOption] = useState();
+  // const [completedTasksCount, setCompletedTasksCount] = useState(0)
+  // const [activeTasksCount, setActiveTasksCount] = useState(0)
 
   useEffect(() => {
-    const c = collection(db, `users/${currentUser.uid}/tasks`)
-    setDocRef(c)
-    console.log("current user changed", c)
-  }, [currentUser])
+    const c = collection(db, `users/${currentUser.uid}/tasks`);
+    setDocRef(c);
+    console.log("current user changed", c);
+  }, [currentUser]);
 
   useEffect(() => {
     if (docRef) {
       const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
-        let completedCount = 0
-        let activeCount = 0
+        let completedCount = 0;
+        let activeCount = 0;
         const tasks = querySnapshot.docs.map((doc) => {
-          const data = doc.data()
+          const data = doc.data();
           if (data.completed) {
-            completedCount++
+            completedCount++;
           } else {
-            activeCount++
+            activeCount++;
           }
           return {
             //return data compatible with data types specified in the tasks variable
             title: data.title,
             completed: data.completed,
             id: doc.id,
-          }
-        })
+          };
+        });
         setFilteredTasks(
           filterOption === undefined
             ? tasks
-            : tasks.filter((task) => task.completed === filterOption)
-        )
-        setCompletedTasksCount(completedCount)
-        setActiveTasksCount(activeCount)
-      })
+            : tasks.filter((task) => task.completed === filterOption),
+        );
+        // setCompletedTasksCount(completedCount)
+        // setActiveTasksCount(activeCount)
+      });
       return () => {
-        unsubscribe()
-      }
+        unsubscribe();
+      };
     }
-  }, [docRef, filterOption])
+  }, [docRef, filterOption]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const title = titleRef.current.value
+  const onSubmit = async (data) => {
+    setShowErrors(true);
+
+    const title = data.title;
     if (title !== "") {
       try {
         await addDoc(docRef, {
           title,
           completed: false,
-        })
-        titleRef.current.value = ""
-        console.log("Task successfully added")
+        });
+        reset();
+        console.log("Task successfully added");
       } catch (e) {
-        console.log("Unsuccessful", e)
+        console.log("Unsuccessful", e);
       }
     }
-  }
+  };
 
   const handleComplete = async (id, completed) => {
     await updateDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`), {
       completed: !completed,
-    })
-  }
+    });
+  };
 
   const handleDelete = async (id) => {
-    await deleteDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`))
-  }
+    await deleteDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`));
+  };
 
-  const handleClearCompleted = async () => {
-    const q = await getDocs(query(docRef, where("completed", "==", true)))
-    q.forEach(async (doc) => {
-      //loop through
-      await deleteDoc(doc.ref)
-    })
-  }
+  // const handleClearCompleted = async () => {
+  //   const q = await getDocs(query(docRef, where("completed", "==", true)))
+  //   q.forEach(async (doc) => {
+  //     //loop through
+  //     await deleteDoc(doc.ref)
+  //   })
+  // }
 
-  const tabItems = [
-    {
-      id: 0,
-      label: "All",
-      action: () => setFilterOption(),
-    },
-    {
-      id: 1,
-      label: `Active (${activeTasksCount})`,
-      action: () => setFilterOption(false),
-    },
-    {
-      id: 2,
-      label: `Completed (${completedTasksCount})`,
-      action: () => setFilterOption(true),
-    },
-  ]
+  // const tabItems = [
+  //   {
+  //     id: 0,
+  //     label: "All",
+  //     action: () => setFilterOption(),
+  //   },
+  //   {
+  //     id: 1,
+  //     label: `Active (${activeTasksCount})`,
+  //     action: () => setFilterOption(false),
+  //   },
+  //   {
+  //     id: 2,
+  //     label: `Completed (${completedTasksCount})`,
+  //     action: () => setFilterOption(true),
+  //   },
+  // ]
 
   return (
-    <Card
-      style={{
-        maxHeight: "95vh",
-      }}
-    >
-      <Navbar />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          overflow: "auto",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "300px",
-          }}
-        >
-          <Form
-            onSubmit={handleSubmit}
-            style={{
-              marginTop: "5px",
-            }}
-          >
-            <InputGroup className="mb-3">
-              <Form.Control
-                placeholder="Enter new task"
-                aria-label="Title"
-                ref={titleRef}
-              />
-            </InputGroup>
-          </Form>
-          <TabBar tabItems={tabItems} />
-          <ListGroup
-            style={{
-              marginTop: "10px",
-              overflow: "auto",
-            }}
-          >
-            {filteredTasks.length > 0 &&
-              filteredTasks.map((task) => {
-                return (
-                  <ListGroup.Item key={task.id}>
-                    <TaskItem
-                      {...task}
-                      handleComplete={handleComplete}
-                      handleDelete={handleDelete}
-                    />
-                  </ListGroup.Item>
-                )
-              })}
-          </ListGroup>
-          {/* footer */}
-          <footer
-            style={{
-              marginTop: "10px",
-              marginBottom: "10px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "10px",
-              }}
-            >
-              <Button variant="primary" onClick={handleClearCompleted}>
-                Clear Completed
-              </Button>
+    // <Card
+    //   style={{
+    //     maxHeight: "95vh",
+    //   }}
+    // >
+    //   <Navbar />
+    //   <div
+    //     style={{
+    //       display: "flex",
+    //       justifyContent: "center",
+    //       alignContent: "center",
+    //       overflow: "auto",
+    //     }}
+    //   >
+    //     <div
+    //       style={{
+    //         display: "flex",
+    //         flexDirection: "column",
+    //         width: "300px",
+    //       }}
+    //     >
+    //       <Form
+    //         onSubmit={handleSubmit}
+    //         style={{
+    //           marginTop: "5px",
+    //         }}
+    //       >
+    //         <InputGroup className="mb-3">
+    //           <Form.Control
+    //             placeholder="Enter new task"
+    //             aria-label="Title"
+    //             ref={titleRef}
+    //           />
+    //         </InputGroup>
+    //       </Form>
+    //       <TabBar tabItems={tabItems} />
+    //       <ListGroup
+    //         style={{
+    //           marginTop: "10px",
+    //           overflow: "auto",
+    //         }}
+    //       >
+    //         {filteredTasks.length > 0 &&
+    //           filteredTasks.map((task) => {
+    //             return (
+    //               <ListGroup.Item key={task.id}>
+    //                 <TaskItem
+    //                   {...task}
+    //                   handleComplete={handleComplete}
+    //                   handleDelete={handleDelete}
+    //                 />
+    //               </ListGroup.Item>
+    //             )
+    //           })}
+    //       </ListGroup>
+    //       {/* footer */}
+    //       <footer
+    //         style={{
+    //           marginTop: "10px",
+    //           marginBottom: "10px",
+    //         }}
+    //       >
+    //         <div
+    //           style={{
+    //             display: "flex",
+    //             justifyContent: "space-between",
+    //             marginTop: "10px",
+    //           }}
+    //         >
+    //           <Button variant="primary" onClick={handleClearCompleted}>
+    //             Clear Completed
+    //           </Button>
+    //         </div>
+    //       </footer>
+    //     </div>
+    //   </div>
+    // </Card>
+    <div>
+      <AuthCard>
+        {/* {alertError && (
+          <div className="toast toast-center toast-middle">
+            <div className="alert alert-error">
+              <span>Error! {alertError}</span>
             </div>
-          </footer>
+          </div>
+        )} */}
+
+        <AuthHeader
+          title="Tasks list"
+          subtitle="Hi, here are your latest tasks"
+        />
+
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <label className="label">
+              <span className="label-text text-base">Title</span>
+            </label>
+            <input
+              {...register("title", {
+                required: "Title is required.",
+              })}
+              type="text"
+              placeholder="Enter Title"
+              className={
+                "input input-bordered w-full" +
+                (showErrors && errors.title ? " input-error" : "")
+              }
+            />
+            {showErrors && errors.title && (
+              <p className="text-error">{errors.title.message}</p>
+            )}
+          </div>
+
+          {/* <div className="link link-primary p-1 hover:text-neutral-900">
+            <Link to="/forgot-password">Forgot Password?</Link>
+          </div> */}
+
+          <button
+            // disabled={loading}
+            className="btn btn-primary btn-block"
+            type="submit"
+            onClick={() => setShowErrors(true)}
+          >
+            {/* {loading && <span className="loading loading-spinner" />} */}
+            Add
+          </button>
+        </form>
+
+        <div id="tasks" className="my-5">
+          {filteredTasks.length > 0 &&
+            filteredTasks.map((task) => {
+              return (
+                <TaskItem
+                  {...task}
+                  handleComplete={handleComplete}
+                  handleDelete={handleDelete}
+                />
+              );
+            })}
         </div>
-      </div>
-    </Card>
-  )
+        {/* <p className="text-center text-xs text-slate-500">
+          Last updated 12 minutes ago
+        </p> */}
+      </AuthCard>
+    </div>
+  );
 }

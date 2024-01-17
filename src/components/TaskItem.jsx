@@ -1,6 +1,5 @@
-import { X } from "lucide-react"
-import React from "react"
-import { Button, Form } from "react-bootstrap"
+import { X } from "lucide-react";
+import React from "react";
 
 export default function TaskItem({
   id,
@@ -10,34 +9,36 @@ export default function TaskItem({
   handleDelete,
 }) {
   return (
-    <>
-      <div
-        key={id}
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "10px",
-        }}
-      >
-        <Form>
-          <Form.Check
+    <div
+      key={id}
+      className="flex items-center justify-between border-b border-l-4 border-slate-200 border-l-transparent px-2 py-3 transition duration-150 ease-linear hover:from-slate-100"
+    >
+      <div className="form-control">
+        <label
+          className="label cursor-pointer"
+          onClick={() => handleComplete(id, completed)}
+        >
+          <input
+            readOnly
             type="checkbox"
             checked={completed}
-            id={"default-checkbox"}
-            onChange={() => handleComplete(id, completed)}
-            label={
-              completed ? (
-                <s className="completed">{title}</s>
-              ) : (
-                <span>{title}</span>
-              )
-            }
+            className="checkbox-primary checkbox"
           />
-        </Form>
-        <Button variant="light" onClick={() => handleDelete(id)}>
-          <X color="#6c757d" />
-        </Button>
+          <span
+            className={
+              "label-text ml-4 hover:text-slate-600" +
+              (completed ? " line-through" : "")
+            }
+          >
+            {title}
+          </span>
+        </label>
       </div>
-    </>
-  )
+
+      <X
+        className="cursor-pointer text-slate-500 hover:text-slate-600"
+        onClick={() => handleDelete(id)}
+      />
+    </div>
+  );
 }

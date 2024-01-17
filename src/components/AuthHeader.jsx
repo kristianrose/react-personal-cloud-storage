@@ -1,6 +1,13 @@
+import React from "react";
 import { ClipboardCheck } from "lucide-react";
+import PropTypes from "prop-types";
 
-export function AuthHeader({ title, subtitle }) {
+AuthHeader.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+};
+
+export function AuthHeader(props) {
   return (
     <>
       <div className="mb-4 flex items-center justify-center">
@@ -11,8 +18,8 @@ export function AuthHeader({ title, subtitle }) {
       </div>
 
       <div className="my-5">
-        <h1 className="text-4xl font-medium">{title}</h1>
-        <p className="text-slate-500">{subtitle}</p>
+        <h1 className="text-4xl font-medium">{props.title}</h1>
+        <p className="text-slate-500">{props.subtitle}</p>
       </div>
     </>
   );

@@ -1,8 +1,8 @@
-import React, { useState } from "react"
-import { Nav } from "react-bootstrap"
+import React, { useState } from "react";
+import { Nav } from "react-bootstrap";
 
 export default function TabBar({ tabItems }) {
-  const [activeKey, setActiveKey] = useState(0)
+  const [activeKey, setActiveKey] = useState(0);
 
   return (
     <>
@@ -14,16 +14,16 @@ export default function TabBar({ tabItems }) {
                 <Nav.Link
                   eventKey={tab.id}
                   onClick={() => {
-                    setActiveKey(tab.id)
-                    tab.action()
+                    setActiveKey(tab.id);
+                    tab.action();
                   }}
                 >
                   {tab.label}
                 </Nav.Link>
               </Nav.Item>
-            )
+            );
           })}
       </Nav>
     </>
-  )
+  );
 }

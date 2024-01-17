@@ -1,50 +1,52 @@
-import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link, useHistory } from "react-router-dom"
+import React, { useRef, useState } from "react";
+import { Form, Button, Card, Alert } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useHistory } from "react-router-dom";
 
 export default function UpdatePassword() {
-  const passwordRef = useRef()
-  const passwordConfirmRef = useRef()
-  const { updatePassword } = useAuth()
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const history = useHistory()
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
+  const { updatePassword } = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match")
+      return setError("Passwords do not match");
     }
 
-    const promises = []
-    setLoading(true)
-    setError("")
+    const promises = [];
+    setLoading(true);
+    setError("");
 
     if (passwordRef.current.value) {
-      promises.push(updatePassword(passwordRef.current.value))
+      promises.push(updatePassword(passwordRef.current.value));
     }
 
     Promise.all(promises)
       .then(() => {
-        setLoading(false)
-        history.push("/")
+        setLoading(false);
+        history.push("/");
       })
-      .catch(e => {
-        if(e?.code === "auth/requires-recent-login"){
-          setError("Failed to update password. Log in again before retrying this request.")
+      .catch((e) => {
+        if (e?.code === "auth/requires-recent-login") {
+          setError(
+            "Failed to update password. Log in again before retrying this request.",
+          );
         } else {
-          setLoading(false)
-          setError("Failed to update password")
+          setLoading(false);
+          setError("Failed to update password");
         }
-      })
+      });
   }
 
   return (
     <>
       <Card>
         <Card.Body>
-          <h2 className="text-center mb-4">Update Password</h2>
+          <h2 className="mb-4 text-center">Update Password</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="password">
@@ -71,9 +73,9 @@ export default function UpdatePassword() {
           </Form>
         </Card.Body>
       </Card>
-      <div className="w-100 text-center mt-2">
+      <div className="w-100 mt-2 text-center">
         <Link to="/">Cancel</Link>
       </div>
     </>
-  )
+  );
 }

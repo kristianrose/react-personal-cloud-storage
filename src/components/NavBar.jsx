@@ -1,24 +1,24 @@
-import React, { useState } from "react"
-import { Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { useHistory } from "react-router-dom"
-import Container from "react-bootstrap/Container"
-import Navbar from "react-bootstrap/Navbar"
-import Dropdown from "react-bootstrap/Dropdown"
+import React, { useState } from "react";
+import { Alert } from "react-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import Dropdown from "react-bootstrap/Dropdown";
 
 export default function NavBar() {
-  const [error, setError] = useState("")
-  const { currentUser, logout } = useAuth()
-  const history = useHistory()
+  const [error, setError] = useState("");
+  const { currentUser, logout } = useAuth();
+  const history = useHistory();
 
   async function handleLogout() {
-    setError("")
+    setError("");
 
     try {
-      await logout()
-      history.push("/login")
+      await logout();
+      history.push("/login");
     } catch {
-      setError("Failed to log out")
+      setError("Failed to log out");
     }
   }
 
@@ -44,5 +44,5 @@ export default function NavBar() {
       </Navbar>
       {error && <Alert variant="danger">{error}</Alert>}
     </>
-  )
+  );
 }

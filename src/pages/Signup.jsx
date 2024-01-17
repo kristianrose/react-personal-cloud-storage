@@ -1,114 +1,152 @@
-// import React, { useRef, useState } from "react";
-// import { useAuth } from "../contexts/AuthContext";
-// import { Link, useHistory } from "react-router-dom";
-import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
-import { AuthHeader } from "../components/AuthHeader";
+import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
 import { AuthCard } from "../components/AuthCard";
+import { AuthHeader } from "../components/AuthHeader";
+import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
+import { useForm } from "react-hook-form";
+import { PasswordInput } from "../components/PasswordInput";
 
 export default function Signup() {
-  // const emailRef = useRef();
-  // const passwordRef = useRef();
-  // const passwordConfirmRef = useRef();
-  // const { signup } = useAuth();
-  // const [error, setError] = useState("");
-  // const [loading, setLoading] = useState(false);
-  // const history = useHistory();
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [showErrors, setShowErrors] = useState(false);
+  const { signup } = useAuth();
+  const [alertError, setAlertError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
-  // async function handleSubmit(e) {
-  //   e.preventDefault();
-
-  //   if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-  //     return setError("Passwords do not match");
-  //   }
-
-  //   try {
-  //     setError("");
-  //     setLoading(true);
-  //     await signup(emailRef.current.value, passwordRef.current.value);
-  //     setLoading(false);
-  //     history.push("/");
-  //   } catch {
-  //     setLoading(false);
-  //     setError("Failed to create an account");
-  //   }
-  // }
+  async function onSubmit(data) {
+    try {
+      setAlertError(null);
+      setLoading(true);
+      await signup(data.email, data.password);
+      setLoading(false);
+      history.push("/");
+    } catch {
+      setAlertError("Failed to create an account.");
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+      setTimeout(() => {
+        setAlertError(null);
+      }, 1000);
+    }
+  }
 
   return (
-    // <>
-    //   <Card>
-    //     <Card.Body>
-    //       <h2 className="text-center mb-4">Sign Up</h2>
-    //       {error && <Alert variant="danger">{error}</Alert>}
-    //       <Form onSubmit={handleSubmit}>
-    //         <Form.Group id="email">
-    //           <Form.Label>Email</Form.Label>
-    //           <Form.Control type="email" ref={emailRef} required />
-    //         </Form.Group>
-    //         <Form.Group id="password">
-    //           <Form.Label>Password</Form.Label>
-    //           <Form.Control type="password" ref={passwordRef} required autoComplete="off" />
-    //         </Form.Group>
-    //         <Form.Group id="password-confirm">
-    //           <Form.Label>Password Confirmation</Form.Label>
-    //           <Form.Control type="password" ref={passwordConfirmRef} required autoComplete="off" />
-    //         </Form.Group>
-    //         <Button disabled={loading} className="w-100 mt-4" type="submit">
-    //           Sign Up
-    //         </Button>
-    //       </Form>
-    //     </Card.Body>
-    //   </Card>
-    //   <div className="w-100 text-center mt-2">
-    //     Already have an account? <Link to="/login">Log In</Link>
-    //   </div>
-    // </>
-
     <AuthCard>
+      {alertError && (
+        <div className="toast toast-center toast-middle z-50">
+          <div className="alert alert-error">
+            <span>Error! {alertError}</span>
+          </div>
+        </div>
+      )}
+
       <AuthHeader title="Sign Up" subtitle="Hi, Welcome 👋" />
 
-      <form className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label className="label">
             <span className="label-text text-base">Email</span>
           </label>
           <input
-            autoComplete="off"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                message: "Email is not valid",
+              },
+            })}
             type="text"
+            autoComplete="email"
             placeholder="Email Address"
-            className="input input-bordered w-full"
+            className={
+              "input input-bordered w-full" +
+              (showErrors && errors.email ? " input-error" : "")
+            }
           />
+          {showErrors && errors.email && (
+            <p className="text-error">{errors.email.message}</p>
+          )}
         </div>
         <div>
           <label className="label">
             <span className="label-text text-base">Password</span>
           </label>
-          <input
-            autoComplete="off"
-            type="password"
-            placeholder="Enter Password"
-            className="input input-bordered w-full"
+          <PasswordInput
+            inputParams={{
+              ...register("password", {
+                required: "Password is required",
+                validate: {
+                  checkLength: (value) =>
+                    value.length >= 6
+                      ? true
+                      : "Password should be at-least 6 characters",
+                  matchPattern: (value) =>
+                    /(?=.*[!@#$*])/.test(value) // /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*])/.test(value)
+                      ? true
+                      : "Password should contain at least one special symbol", // "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol",
+                },
+              }),
+              placeholder: "Enter Password",
+              autoComplete: "new-password",
+            }}
+            hasError={showErrors && errors.password}
           />
+          {showErrors && errors.password && (
+            <p className="text-error">{errors.password.message}</p>
+          )}
         </div>
+
         <div>
           <label className="label">
-            <span className="label-text text-base">Password Confirmation</span>
+            <span className="label-text text-base">Confirm Password</span>
           </label>
-          <input
-            autoComplete="off"
-            type="password"
-            placeholder="Enter Password"
-            className="input input-bordered w-full"
+          <PasswordInput
+            inputParams={{
+              ...register("passwordConfirmation", {
+                required: "Password is required",
+                validate: {
+                  checkPasswordsMatch: (val) => {
+                    const { password } = getValues();
+                    return password === val
+                      ? true
+                      : "Your passwords do no match";
+                  },
+                },
+              }),
+              placeholder: "Enter Password Confirmation",
+              autoComplete: "new-password-confirmation",
+            }}
+            hasError={showErrors && errors.passwordConfirmation}
           />
+          {showErrors && errors.passwordConfirmation && (
+            <p className="text-error">{errors.passwordConfirmation.message}</p>
+          )}
         </div>
 
-        <button className="btn btn-primary btn-block">Sign Up</button>
-
-        <AuthBottomRedirect
-          text="Already have an account?"
-          linkText="Log In"
-          linkTo="/login"
-        />
+        <button
+          disabled={loading}
+          className="btn btn-primary btn-block my-4"
+          type="submit"
+          onClick={() => setShowErrors(true)}
+        >
+          {loading && <span className="loading loading-spinner" />}
+          Sign Up
+        </button>
       </form>
+
+      <AuthBottomRedirect
+        text="Already have an account?"
+        linkText="Log In"
+        linkTo="/login"
+      />
     </AuthCard>
   );
 }

@@ -1,12 +1,11 @@
-// import { useRef, useState } from "react"
-// import { Form, Button, Card, Alert } from "react-bootstrap"
-// import { useAuth } from "../contexts/AuthContext"
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useHistory } from "react-router-dom";
 import { AuthCard } from "../components/AuthCard";
 import { AuthHeader } from "../components/AuthHeader";
 import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { PasswordInput } from "../components/PasswordInput";
 
 export default function Login() {
   const {
@@ -14,63 +13,40 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const [showErrors, setShowErrors] = useState(false);
+  const { login } = useAuth();
+  const [alertError, setAlertError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
-  // const emailRef = useRef()
-  // const passwordRef = useRef()
-  // const { login } = useAuth()
-  // const [error, setError] = useState("")
-  // const [loading, setLoading] = useState(false)
-  // const history = useHistory()
-
-  // async function handleSubmit(e) {
-  //   e.preventDefault()
-
-  //   try {
-  //     setError("")
-  //     setLoading(true)
-  //     await login(emailRef.current.value, passwordRef.current.value)
-  //     setLoading(false)
-  //     history.push("/")
-  //   } catch {
-  //     setLoading(false)
-  //     setError("Failed to log in")
-  //   }
-  // }
-
-  /* <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Log In</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required autoComplete="on" />
-            </Form.Group>
-            <Button disabled={loading} className="w-100 mt-4" type="submit">
-              Log In
-            </Button>
-          </Form>
-          <div className="w-100 text-center mt-3">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </div>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2">
-        Need an account? <Link to="/signup">Sign Up</Link>
-      </div> */
+  async function onSubmit(data) {
+    try {
+      setAlertError(null);
+      setLoading(true);
+      await login(data.email, data.password);
+      setLoading(false);
+      history.push("/");
+    } catch {
+      setAlertError("Failed to log in.");
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+      setTimeout(() => {
+        setAlertError(null);
+      }, 1000);
+    }
+  }
 
   return (
     <AuthCard>
+      {alertError && (
+        <div className="toast toast-center toast-middle z-50">
+          <div className="alert alert-error">
+            <span>Error! {alertError}</span>
+          </div>
+        </div>
+      )}
+
       <AuthHeader title="Login" subtitle="Hi, Welcome back 👋" />
 
       {/* <div>
@@ -100,6 +76,7 @@ export default function Login() {
               },
             })}
             type="text"
+            autoComplete="email"
             placeholder="Email Address"
             className={
               "input input-bordered w-full" +
@@ -114,41 +91,18 @@ export default function Login() {
           <label className="label">
             <span className="label-text text-base">Password</span>
           </label>
-          <input
-            {...register("password", {
-              required: true,
-              validate: {
-                checkLength: (value) => value.length >= 6,
-                // matchPattern: (value) =>
-                //   /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*])/.test(
-                //     value,
-                //   ),
-              },
-            })}
-            type="password"
-            placeholder="Enter Password"
-            className={
-              "input input-bordered w-full" +
-              (showErrors && errors.password ? " input-error" : "")
-            }
+          <PasswordInput
+            inputParams={{
+              ...register("password", {
+                required: "Password is required",
+              }),
+              placeholder: "Enter Password",
+              autoComplete: "current-password",
+            }}
+            hasError={showErrors && errors.password}
           />
-          {showErrors && (
-            <div>
-              {errors.password?.type === "required" && (
-                <p className="text-error">Password is required</p>
-              )}
-              {errors.password?.type === "checkLength" && (
-                <p className="text-error">
-                  Password should be at-least 6 characters
-                </p>
-              )}
-              {errors.password?.type === "matchPattern" && (
-                <p className="text-error">
-                  Password should contain at least one uppercase letter,
-                  lowercase letter, digit, and special symbol
-                </p>
-              )}
-            </div>
+          {showErrors && errors.email && (
+            <p className="text-error">{errors.password.message}</p>
           )}
         </div>
 
@@ -157,10 +111,12 @@ export default function Login() {
         </div>
 
         <button
+          disabled={loading}
           className="btn btn-primary btn-block"
           type="submit"
           onClick={() => setShowErrors(true)}
         >
+          {loading && <span className="loading loading-spinner" />}
           Login
         </button>
 
