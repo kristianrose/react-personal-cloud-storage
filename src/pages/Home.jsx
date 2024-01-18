@@ -31,10 +31,8 @@ export default function Home() {
 
   const { currentUser } = useAuth();
   const [docRef, setDocRef] = useState();
-  const [filteredTasks, setFilteredTasks] = useState([]);
-  const [filterOption, setFilterOption] = useState();
-  // const [completedTasksCount, setCompletedTasksCount] = useState(0)
-  // const [activeTasksCount, setActiveTasksCount] = useState(0)
+  const [activeTasks, setActiveTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
 
   useEffect(() => {
     const c = collection(db, `users/${currentUser.uid}/tasks`);
@@ -45,35 +43,32 @@ export default function Home() {
   useEffect(() => {
     if (docRef) {
       const unsubscribe = onSnapshot(docRef, (querySnapshot) => {
-        let completedCount = 0;
-        let activeCount = 0;
-        const tasks = querySnapshot.docs.map((doc) => {
+        let active = [];
+        let completed = [];
+
+        querySnapshot.docs.forEach((doc) => {
           const data = doc.data();
-          if (data.completed) {
-            completedCount++;
-          } else {
-            activeCount++;
-          }
-          return {
-            //return data compatible with data types specified in the tasks variable
+          const task = {
             title: data.title,
             completed: data.completed,
             id: doc.id,
           };
+
+          if (task.completed) {
+            completed.push(task);
+          } else {
+            active.push(task);
+          }
         });
-        setFilteredTasks(
-          filterOption === undefined
-            ? tasks
-            : tasks.filter((task) => task.completed === filterOption),
-        );
-        // setCompletedTasksCount(completedCount)
-        // setActiveTasksCount(activeCount)
+
+        setActiveTasks(active);
+        setCompletedTasks(completed);
       });
       return () => {
         unsubscribe();
       };
     }
-  }, [docRef, filterOption]);
+  }, [docRef]);
 
   const onSubmit = async (data) => {
     setShowErrors(true);
@@ -110,24 +105,6 @@ export default function Home() {
   //     await deleteDoc(doc.ref)
   //   })
   // }
-
-  // const tabItems = [
-  //   {
-  //     id: 0,
-  //     label: "All",
-  //     action: () => setFilterOption(),
-  //   },
-  //   {
-  //     id: 1,
-  //     label: `Active (${activeTasksCount})`,
-  //     action: () => setFilterOption(false),
-  //   },
-  //   {
-  //     id: 2,
-  //     label: `Completed (${completedTasksCount})`,
-  //     action: () => setFilterOption(true),
-  //   },
-  // ]
 
   return (
     // <Card
@@ -259,10 +236,11 @@ export default function Home() {
         </form>
 
         <div id="tasks" className="my-5">
-          {filteredTasks.length > 0 &&
-            filteredTasks.map((task) => {
+          {activeTasks.length > 0 &&
+            activeTasks.map((task) => {
               return (
                 <TaskItem
+                  key={task.id}
                   {...task}
                   handleComplete={handleComplete}
                   handleDelete={handleDelete}
@@ -270,9 +248,28 @@ export default function Home() {
               );
             })}
         </div>
-        {/* <p className="text-center text-xs text-slate-500">
-          Last updated 12 minutes ago
-        </p> */}
+
+        <div className="collapse collapse-arrow overflow-visible bg-base-200">
+          <input type="checkbox" name="completed-tasks-collapse" />
+          <div className="collapse-title font-medium">
+            Completed ({completedTasks.length})
+          </div>
+          <div className="collapse-content overflow-hidden">
+            <div id="tasks">
+              {completedTasks.length > 0 &&
+                completedTasks.map((task) => {
+                  return (
+                    <TaskItem
+                      key={task.id}
+                      {...task}
+                      handleComplete={handleComplete}
+                      handleDelete={handleDelete}
+                    />
+                  );
+                })}
+            </div>
+          </div>
+        </div>
       </AuthCard>
     </div>
   );
