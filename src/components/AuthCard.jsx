@@ -1,9 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
-
-AuthCard.propTypes = {
-  children: PropTypes.array,
-};
 
 export function AuthCard(props) {
   return (

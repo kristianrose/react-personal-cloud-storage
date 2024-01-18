@@ -8,9 +8,9 @@ import {
   updateDoc,
   doc,
   deleteDoc,
-  query,
-  where,
-  getDocs,
+  // query,
+  // where,
+  // getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
@@ -28,7 +28,6 @@ export default function Home() {
     formState: { errors },
   } = useForm();
   const [showErrors, setShowErrors] = useState(false);
-
   const { currentUser } = useAuth();
   const [docRef, setDocRef] = useState();
   const [activeTasks, setActiveTasks] = useState([]);
@@ -107,92 +106,8 @@ export default function Home() {
   // }
 
   return (
-    // <Card
-    //   style={{
-    //     maxHeight: "95vh",
-    //   }}
-    // >
-    //   <Navbar />
-    //   <div
-    //     style={{
-    //       display: "flex",
-    //       justifyContent: "center",
-    //       alignContent: "center",
-    //       overflow: "auto",
-    //     }}
-    //   >
-    //     <div
-    //       style={{
-    //         display: "flex",
-    //         flexDirection: "column",
-    //         width: "300px",
-    //       }}
-    //     >
-    //       <Form
-    //         onSubmit={handleSubmit}
-    //         style={{
-    //           marginTop: "5px",
-    //         }}
-    //       >
-    //         <InputGroup className="mb-3">
-    //           <Form.Control
-    //             placeholder="Enter new task"
-    //             aria-label="Title"
-    //             ref={titleRef}
-    //           />
-    //         </InputGroup>
-    //       </Form>
-    //       <TabBar tabItems={tabItems} />
-    //       <ListGroup
-    //         style={{
-    //           marginTop: "10px",
-    //           overflow: "auto",
-    //         }}
-    //       >
-    //         {filteredTasks.length > 0 &&
-    //           filteredTasks.map((task) => {
-    //             return (
-    //               <ListGroup.Item key={task.id}>
-    //                 <TaskItem
-    //                   {...task}
-    //                   handleComplete={handleComplete}
-    //                   handleDelete={handleDelete}
-    //                 />
-    //               </ListGroup.Item>
-    //             )
-    //           })}
-    //       </ListGroup>
-    //       {/* footer */}
-    //       <footer
-    //         style={{
-    //           marginTop: "10px",
-    //           marginBottom: "10px",
-    //         }}
-    //       >
-    //         <div
-    //           style={{
-    //             display: "flex",
-    //             justifyContent: "space-between",
-    //             marginTop: "10px",
-    //           }}
-    //         >
-    //           <Button variant="primary" onClick={handleClearCompleted}>
-    //             Clear Completed
-    //           </Button>
-    //         </div>
-    //       </footer>
-    //     </div>
-    //   </div>
-    // </Card>
     <div>
       <AuthCard>
-        {/* {alertError && (
-          <div className="toast toast-center toast-middle">
-            <div className="alert alert-error">
-              <span>Error! {alertError}</span>
-            </div>
-          </div>
-        )} */}
 
         <AuthHeader
           title="Tasks list"

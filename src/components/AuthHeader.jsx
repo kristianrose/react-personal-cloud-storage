@@ -1,11 +1,4 @@
-import React from "react";
 import { ClipboardCheck } from "lucide-react";
-import PropTypes from "prop-types";
-
-AuthHeader.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-};
 
 export function AuthHeader(props) {
   return (
