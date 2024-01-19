@@ -1,5 +1,3 @@
-// import Navbar from "../components/NavBar"
-// import React, { useState } from "react";
 import { useState, useEffect } from "react";
 import {
   collection,
@@ -8,35 +6,25 @@ import {
   updateDoc,
   doc,
   deleteDoc,
-  // query,
-  // where,
-  // getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
-// import TabBar from "../components/TabBar"
 import { AuthCard } from "../components/AuthCard";
-import { AuthHeader } from "../components/AuthHeader";
-import { useForm } from "react-hook-form";
 import TaskItem from "../components/TaskItem";
+import { CreateEditTaskModal } from "../components/CreateEditTaskModal";
+import { ClipboardCheck, Plus } from "lucide-react";
 
 export default function Home() {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-  const [showErrors, setShowErrors] = useState(false);
   const { currentUser } = useAuth();
   const [docRef, setDocRef] = useState();
   const [activeTasks, setActiveTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState();
+  const [showCreateEditTaskModal, setShowCreateEditTaskModal] = useState(false);
 
   useEffect(() => {
     const c = collection(db, `users/${currentUser.uid}/tasks`);
     setDocRef(c);
-    console.log("current user changed", c);
   }, [currentUser]);
 
   useEffect(() => {
@@ -69,9 +57,7 @@ export default function Home() {
     }
   }, [docRef]);
 
-  const onSubmit = async (data) => {
-    setShowErrors(true);
-
+  const handleCreate = async (data) => {
     const title = data.title;
     if (title !== "") {
       try {
@@ -79,12 +65,12 @@ export default function Home() {
           title,
           completed: false,
         });
-        reset();
         console.log("Task successfully added");
       } catch (e) {
         console.log("Unsuccessful", e);
       }
     }
+    setShowCreateEditTaskModal(false);
   };
 
   const handleComplete = async (id, completed) => {
@@ -97,71 +83,61 @@ export default function Home() {
     await deleteDoc(doc(db, `users/${currentUser.uid}/tasks/${id}`));
   };
 
-  // const handleClearCompleted = async () => {
-  //   const q = await getDocs(query(docRef, where("completed", "==", true)))
-  //   q.forEach(async (doc) => {
-  //     //loop through
-  //     await deleteDoc(doc.ref)
-  //   })
-  // }
+  const handleEdit = async (data, task) => {
+    await updateDoc(doc(db, `users/${currentUser.uid}/tasks/${task.id}`), {
+      title: data.title,
+    });
+    setShowCreateEditTaskModal(false);
+  };
+
+  const openCreateEditTaskModal = (task) => {
+    setSelectedTask(task);
+    setShowCreateEditTaskModal(true);
+  };
 
   return (
     <div>
+      <CreateEditTaskModal
+        showModal={showCreateEditTaskModal}
+        setShowModal={setShowCreateEditTaskModal}
+        selectedTask={selectedTask}
+        handleEdit={handleEdit}
+        handleCreate={handleCreate}
+      />
+
       <AuthCard>
+        <div className="mb-4 flex items-center justify-center">
+          <ClipboardCheck size={25} />
+          <span className="text-center text-xl font-semibold text-gray-700">
+            Task Manager
+          </span>
+        </div>
 
-        <AuthHeader
-          title="Tasks list"
-          subtitle="Hi, here are your latest tasks"
-        />
-
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <label className="label">
-              <span className="label-text text-base">Title</span>
-            </label>
-            <input
-              {...register("title", {
-                required: "Title is required.",
-              })}
-              type="text"
-              placeholder="Enter Title"
-              className={
-                "input input-bordered w-full" +
-                (showErrors && errors.title ? " input-error" : "")
-              }
-            />
-            {showErrors && errors.title && (
-              <p className="text-error">{errors.title.message}</p>
-            )}
+        <div className="flex items-center justify-between">
+          <div className="my-5">
+            <h1 className="text-4xl font-medium">Tasks list</h1>
+            <p className="text-slate-500">Hi, here are your latest tasks</p>
           </div>
 
-          {/* <div className="link link-primary p-1 hover:text-neutral-900">
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </div> */}
-
           <button
-            // disabled={loading}
-            className="btn btn-primary btn-block"
-            type="submit"
-            onClick={() => setShowErrors(true)}
+            className="btn btn-circle bg-primary"
+            onClick={() => openCreateEditTaskModal()}
           >
-            {/* {loading && <span className="loading loading-spinner" />} */}
-            Add
+            <Plus color="white" />
           </button>
-        </form>
+        </div>
 
         <div id="tasks" className="my-5">
           {activeTasks.length > 0 &&
-            activeTasks.map((task) => {
-              return (
-                <TaskItem
-                  key={task.id}
-                  {...task}
-                  handleComplete={handleComplete}
-                  handleDelete={handleDelete}
-                />
-              );
-            })}
+            activeTasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                handleComplete={handleComplete}
+                handleDelete={handleDelete}
+                openCreateEditTaskModal={openCreateEditTaskModal}
+              />
+            ))}
         </div>
 
         <div className="collapse collapse-arrow overflow-visible bg-base-200">
@@ -172,16 +148,15 @@ export default function Home() {
           <div className="collapse-content overflow-hidden">
             <div id="tasks">
               {completedTasks.length > 0 &&
-                completedTasks.map((task) => {
-                  return (
-                    <TaskItem
-                      key={task.id}
-                      {...task}
-                      handleComplete={handleComplete}
-                      handleDelete={handleDelete}
-                    />
-                  );
-                })}
+                completedTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    handleComplete={handleComplete}
+                    handleDelete={handleDelete}
+                    openCreateEditTaskModal={openCreateEditTaskModal}
+                  />
+                ))}
             </div>
           </div>
         </div>
