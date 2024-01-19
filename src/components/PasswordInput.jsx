@@ -8,13 +8,13 @@ export function PasswordInput(params) {
       <input
         {...params.inputParams}
         className={
-          "input input-bordered w-full pr-10" +
+          "input input-bordered w-full pr-9" +
           (params.hasError ? " input-error" : "")
         }
         type={showPassword ? "text" : "password"}
       />
       <div
-        className="absolute right-3 top-[16.5px] cursor-pointer"
+        className="absolute bottom-0 right-0 top-0 flex cursor-pointer items-center pr-3"
         onClick={() => setShowPassword((show) => !show)}
       >
         {showPassword ? (

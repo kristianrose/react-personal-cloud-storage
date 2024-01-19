@@ -11,7 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 function App() {
   return (
     <div
-      className="flex h-screen w-screen justify-center bg-slate-200"
+      className="flex h-screen w-screen justify-center md:bg-slate-200"
       data-theme="fantasy"
     >
       <Router>
