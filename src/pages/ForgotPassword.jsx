@@ -1,75 +1,86 @@
 import { AuthCard } from "../components/AuthCard";
 import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
 import { AuthHeader } from "../components/AuthHeader";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Alert } from "../components/Alert";
+import { ALERT_TYPES } from "../constants";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function ForgotPassword() {
-  // const emailRef = useRef()
-  // const { resetPassword } = useAuth()
-  // const [error, setError] = useState("")
-  // const [message, setMessage] = useState("")
-  // const [loading, setLoading] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [showErrors, setShowErrors] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const alertRef = useRef(null);
+  const { resetPassword } = useAuth(null);
 
-  // async function handleSubmit(e) {
-  //   e.preventDefault()
-
-  //   try {
-  //     setMessage("")
-  //     setError("")
-  //     setLoading(true)
-  //     await resetPassword(emailRef.current.value)
-  //     setLoading(false)
-  //     setMessage("Check your inbox for further instructions")
-  //   } catch {
-  //     setLoading(false)
-  //     setError("Failed to reset password")
-  //   }
-  // }
+  async function onSubmit(data) {
+    try {
+      setLoading(true);
+      await resetPassword(data.email);
+      setLoading(false);
+      alertRef.current.showAlert(
+        ALERT_TYPES.SUCCESS,
+        "Check your inbox for further instructions.",
+      );
+    } catch {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
+      alertRef.current.showAlert(
+        ALERT_TYPES.ERROR,
+        "Failed to reset the password.",
+      );
+    }
+  }
 
   return (
-    // <>
-    //   <Card>
-    //     <Card.Body>
-    //       <h2 className="text-center mb-4">Password Reset</h2>
-    //       {error && <Alert variant="danger">{error}</Alert>}
-    //       {message && <Alert variant="success">{message}</Alert>}
-    //       <Form onSubmit={handleSubmit}>
-    //         <Form.Group id="email">
-    //           <Form.Label>Email</Form.Label>
-    //           <Form.Control type="email" ref={emailRef} required />
-    //         </Form.Group>
-    //         <Button disabled={loading} className="w-100 mt-4" type="submit">
-    //           Reset Password
-    //         </Button>
-    //       </Form>
-    //       <div className="w-100 text-center mt-3">
-    //         <Link to="/login">Login</Link>
-    //       </div>
-    //     </Card.Body>
-    //   </Card>
-    //   <div className="w-100 text-center mt-2">
-    //     Need an account? <Link to="/signup">Sign Up</Link>
-    //   </div>
-    // </>
-
     <AuthCard>
+      <Alert ref={alertRef} />
+
       <AuthHeader
         title="Reset password"
         subtitle="Fill up the form to get instructions"
       />
 
-      <form className="space-y-5">
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label className="label">
             <span className="label-text text-base">Email</span>
           </label>
           <input
+            {...register("email", {
+              required: "Email is required.",
+              pattern: {
+                value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                message: "Email is not valid",
+              },
+            })}
             type="text"
+            autoComplete="email"
             placeholder="Email Address"
-            className="input input-bordered w-full"
+            className={
+              "input input-bordered w-full" +
+              (showErrors && errors.email ? " input-error" : "")
+            }
           />
+          {showErrors && errors.email && (
+            <p className="text-error">{errors.email.message}</p>
+          )}
         </div>
 
-        <button className="btn btn-primary btn-block">Reset Password</button>
+        <button
+          disabled={loading}
+          className="btn btn-primary btn-block"
+          type="submit"
+          onClick={() => setShowErrors(true)}
+        >
+          Reset Password
+        </button>
 
         <AuthBottomRedirect
           text="Remember your password?"
