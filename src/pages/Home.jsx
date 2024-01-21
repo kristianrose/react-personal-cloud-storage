@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   collection,
   addDoc,
@@ -12,15 +12,29 @@ import { useAuth } from "../contexts/AuthContext";
 import { AuthCard } from "../components/AuthCard";
 import TaskItem from "../components/TaskItem";
 import { CreateEditTaskModal } from "../components/CreateEditTaskModal";
-import { ClipboardCheck, Plus } from "lucide-react";
+import { ClipboardCheck, Plus, UserCircle } from "lucide-react";
+import { useHistory } from "react-router-dom";
+import { ALERT_TYPES } from "../constants";
+import { Alert } from "../components/Alert";
 
 export default function Home() {
-  const { currentUser } = useAuth();
+  const alertRef = useRef(null);
+  const { currentUser, logout } = useAuth();
   const [docRef, setDocRef] = useState();
   const [activeTasks, setActiveTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState();
   const [showCreateEditTaskModal, setShowCreateEditTaskModal] = useState(false);
+  const history = useHistory();
+
+  async function handleLogout() {
+    try {
+      await logout();
+      history.push("/login");
+    } catch {
+      alertRef.current.showAlert(ALERT_TYPES.ERROR, "Failed to log out.");
+    }
+  }
 
   useEffect(() => {
     const c = collection(db, `users/${currentUser.uid}/tasks`);
@@ -97,6 +111,8 @@ export default function Home() {
 
   return (
     <div>
+      <Alert ref={alertRef} />
+
       <CreateEditTaskModal
         showModal={showCreateEditTaskModal}
         setShowModal={setShowCreateEditTaskModal}
@@ -106,11 +122,30 @@ export default function Home() {
       />
 
       <AuthCard>
-        <div className="mb-4 flex items-center justify-center">
-          <ClipboardCheck size={25} />
-          <span className="text-center text-xl font-semibold text-gray-700">
-            Task Manager
-          </span>
+        <div className="flex justify-between">
+          <div className="mb-4 flex items-center justify-center">
+            <ClipboardCheck size={25} />
+            <span className="text-center text-xl font-semibold text-gray-700">
+              Task Manager
+            </span>
+          </div>
+
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button">
+              <UserCircle
+                size={25}
+                className="text-slate-500 hover:text-slate-600"
+              />
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
+            >
+              <li>
+                <a onClick={handleLogout}>Log Out</a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="flex items-center justify-between">
@@ -119,12 +154,14 @@ export default function Home() {
             <p className="text-slate-500">Hi, here are your latest tasks</p>
           </div>
 
-          <button
-            className="btn btn-circle bg-primary"
-            onClick={() => openCreateEditTaskModal()}
-          >
-            <Plus color="white" />
-          </button>
+          <div className="tooltip tooltip-bottom" data-tip="Add Task">
+            <button
+              className="btn btn-circle bg-primary"
+              onClick={() => openCreateEditTaskModal()}
+            >
+              <Plus color="white" />
+            </button>
+          </div>
         </div>
 
         <div id="tasks" className="my-5">
