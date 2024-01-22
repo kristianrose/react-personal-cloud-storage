@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
-import { AuthCard } from "../components/AuthCard";
-import { AuthHeader } from "../components/AuthHeader";
-import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
+import { CentredContainer } from "../../components/auth/CentredContainer";
+import { AuthHeader } from "../../components/auth/AuthHeader";
+import { AuthBottomRedirect } from "../../components/auth/AuthBottomRedirect";
 import { useForm } from "react-hook-form";
-import { PasswordInput } from "../components/PasswordInput";
+import { PasswordInput } from "../../components/auth/PasswordInput";
 
 export default function Signup() {
   const {
@@ -39,7 +39,7 @@ export default function Signup() {
   }
 
   return (
-    <AuthCard>
+    <CentredContainer>
       {alertError && (
         <div className="toast toast-center toast-middle z-50">
           <div className="alert alert-error">
@@ -147,6 +147,6 @@ export default function Signup() {
         linkText="Log In"
         linkTo="/login"
       />
-    </AuthCard>
+    </CentredContainer>
   );
 }

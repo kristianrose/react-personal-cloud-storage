@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
-import { AuthCard } from "../components/AuthCard";
+import { CentredContainer } from "../components/auth/CentredContainer";
 import TaskItem from "../components/TaskItem";
 import { CreateEditTaskModal } from "../components/CreateEditTaskModal";
 import { ClipboardCheck, Plus, UserCircle } from "lucide-react";
@@ -121,7 +121,7 @@ export default function Home() {
         handleCreate={handleCreate}
       />
 
-      <AuthCard>
+      <CentredContainer>
         <div className="flex justify-between">
           <div className="mb-4 flex items-center justify-center">
             <ClipboardCheck size={25} />
@@ -197,7 +197,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </AuthCard>
+      </CentredContainer>
     </div>
   );
 }

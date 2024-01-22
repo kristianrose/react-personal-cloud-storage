@@ -1,11 +1,11 @@
-import { AuthCard } from "../components/AuthCard";
-import { AuthBottomRedirect } from "../components/AuthBottomRedirect";
-import { AuthHeader } from "../components/AuthHeader";
+import { CentredContainer } from "../../components/auth/CentredContainer";
+import { AuthBottomRedirect } from "../../components/auth/AuthBottomRedirect";
+import { AuthHeader } from "../../components/auth/AuthHeader";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert } from "../components/Alert";
-import { ALERT_TYPES } from "../constants";
-import { useAuth } from "../contexts/AuthContext";
+import { Alert } from "../../components/Alert";
+import { ALERT_TYPES } from "../../constants";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function ForgotPassword() {
   const {
@@ -39,7 +39,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <AuthCard>
+    <CentredContainer>
       <Alert ref={alertRef} />
 
       <AuthHeader
@@ -88,6 +88,6 @@ export default function ForgotPassword() {
           linkTo="/login"
         />
       </form>
-    </AuthCard>
+    </CentredContainer>
   );
 }
