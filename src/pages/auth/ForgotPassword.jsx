@@ -4,7 +4,7 @@ import { AuthHeader } from "../../components/auth/AuthHeader";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "../../components/Alert";
-import { ALERT_TYPES } from "../../constants";
+import { ALERT_CLASSES } from "../../constants";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function ForgotPassword() {
@@ -24,7 +24,7 @@ export default function ForgotPassword() {
       await resetPassword(data.email);
       setLoading(false);
       alertRef.current.showAlert(
-        ALERT_TYPES.SUCCESS,
+        ALERT_CLASSES.SUCCESS,
         "Check your inbox for further instructions.",
       );
     } catch {
@@ -32,7 +32,7 @@ export default function ForgotPassword() {
         setLoading(false);
       }, 300);
       alertRef.current.showAlert(
-        ALERT_TYPES.ERROR,
+        ALERT_CLASSES.ERROR,
         "Failed to reset the password.",
       );
     }

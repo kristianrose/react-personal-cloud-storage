@@ -6,7 +6,7 @@ export function AuthHeader(props) {
       <div className="mb-4 flex items-center justify-center">
         <ClipboardCheck size={25} />
         <span className="text-center text-xl font-semibold text-gray-700">
-          Task Manager
+          Personal Cloud Storage
         </span>
       </div>
 
