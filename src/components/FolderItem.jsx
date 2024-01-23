@@ -1,11 +1,12 @@
 import { FolderIcon } from "lucide-react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function FolderItem({ folder }) {
   return (
-    <div className="btn btn-outline">
+    <Link to={`/folder/${folder.id}`} className="btn btn-outline flex">
       <FolderIcon />
-      {folder.name}
-    </div>
+      <span className="max-w-40 truncate">{folder.name}</span>
+    </Link>
   );
 }

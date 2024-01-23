@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Breadcrumbs(folders) {
+export default function Breadcrumbs({ childFolders }) {
   return (
     <div className="breadcrumbs text-sm">
       <ul>
