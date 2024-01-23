@@ -22,7 +22,7 @@ export default function NavBar() {
   return (
     <div className="navbar bg-base-200">
       <div className="flex-1">
-        <a className="text-xl font-medium">Personal Cloud Storage</a>
+        <a className="ml-2 text-xl font-medium">Personal Cloud Storage</a>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
