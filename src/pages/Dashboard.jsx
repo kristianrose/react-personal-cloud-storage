@@ -1,5 +1,5 @@
 import NavBar from "../components/NavBar";
-import Breadcrumbs from "../components/FolderBreadcrumbs";
+import FolderBreadcrumbs from "../components/FolderBreadcrumbs";
 import FolderItem from "../components/FolderItem";
 import CreateFolderButton from "../components/CreateFolderButton";
 import { useFolder } from "../hooks/useFolder";
@@ -22,7 +22,9 @@ export default function Dashboard() {
           <button className="btn btn-primary">Add File</button>
           <CreateFolderButton currentFolder={folder} />
         </div>
-        <Breadcrumbs childFolders={childFolders} />
+
+        <FolderBreadcrumbs currentFolder={folder} />
+
         <div className="flex gap-4">
           {childFolders?.length > 0 &&
             childFolders.map((childFolder) => (
