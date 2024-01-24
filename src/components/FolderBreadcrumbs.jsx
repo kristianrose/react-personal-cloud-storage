@@ -13,8 +13,10 @@ export default function Breadcrumbs({ currentFolder }) {
         {path.map((folder, index) => (
           <li key={folder.id}>
             <Link
-              to={folder.id ? `/folder/${folder.id}` : "/"}
-              state={{ folder: { ...folder, path: path.slice(1, index) } }}
+              to={{
+                pathname: folder.id ? `/folder/${folder.id}` : "/",
+                state: { folder: { ...folder, path: path.slice(1, index) } },
+              }}
             >
               <div className="inline-flex max-w-40 items-center gap-1 truncate">
                 <Folder size={18} />

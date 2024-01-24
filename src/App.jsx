@@ -10,8 +10,8 @@ import { AlertProvider } from "./contexts/AlertContext";
 function App() {
   return (
     <div className="flex h-screen w-screen flex-col " data-theme="fantasy">
-      <AlertProvider>
-        <Router>
+      <Router>
+        <AlertProvider>
           <AuthProvider>
             <Switch>
               <PrivateRoute exact path="/" component={Dashboard} />
@@ -25,8 +25,8 @@ function App() {
               <Route path="/forgot-password" component={ForgotPassword} />
             </Switch>
           </AuthProvider>
-        </Router>
-      </AlertProvider>
+        </AlertProvider>
+      </Router>
     </div>
   );
 }
