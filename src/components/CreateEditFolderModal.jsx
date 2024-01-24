@@ -39,11 +39,13 @@ export function CreateEditFolderModal({
       <div className="modal-box">
         <form
           method="dialog"
-          onSubmit={handleSubmit((data) =>
-            selectedFolder
+          onSubmit={handleSubmit((data) => {
+            setShowModal(false);
+
+            return selectedFolder
               ? handleEdit(data, selectedFolder)
-              : handleCreate(data),
-          )}
+              : handleCreate(data);
+          })}
         >
           {/* if there is a button in form, it will close the modal */}
           <button
