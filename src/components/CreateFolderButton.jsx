@@ -55,8 +55,11 @@ export default function CreateFolderButton({ currentFolder }) {
         className="btn btn-primary"
         onClick={() => openCreateEditFolderModal()}
       >
-        {loading && <span className="loading loading-spinner" />}
-        <FolderPlus />
+        {loading ? (
+          <span className="loading loading-spinner" />
+        ) : (
+          <FolderPlus />
+        )}
         Create Folder
       </button>
 

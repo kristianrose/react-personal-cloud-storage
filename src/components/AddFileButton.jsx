@@ -92,7 +92,7 @@ export default function AddFileButton({ currentFolder }) {
     <>
       <label className="btn btn-primary">
         <FileUp />
-        <span>Add File</span>
+        <span>Upload File</span>
         <input
           type="file"
           onChange={handleUpload}

@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 
@@ -19,6 +19,7 @@ function reducer(state, { type, payload }) {
         folder: payload.folder,
         childFiles: [],
         childFolders: [],
+        loadingState: { childFolders: false, childFiles: false },
       };
     case ACTIONS.UPDATE_FOLDER:
       return {
@@ -29,11 +30,13 @@ function reducer(state, { type, payload }) {
       return {
         ...state,
         childFolders: payload.childFolders,
+        loadingState: { ...state?.loadingState, childFolders: true },
       };
     case ACTIONS.SET_CHILD_FILES:
       return {
         ...state,
         childFiles: payload.childFiles,
+        loadingState: { ...state?.loadingState, childFiles: true },
       };
     default:
       return state;
@@ -46,6 +49,7 @@ export function useFolder(folderId = null, folder = null) {
     folder,
     childFolders: [],
     childFiles: [],
+    loadingState: { childFolders: false, childFiles: false },
   });
   const { currentUser } = useAuth();
 
