@@ -25,17 +25,26 @@ export default function Dashboard() {
           <AddFileButton currentFolder={folder} />
         </div>
 
-        <FolderBreadcrumbs currentFolder={folder} />
+        <div className="my-4">
+          <FolderBreadcrumbs currentFolder={folder} />
+        </div>
 
-        <div className="flex flex-wrap gap-4">
-          {childFolders?.length > 0 &&
-            childFolders.map((childFolder) => (
-              <FolderItem key={childFolder.id} folder={childFolder} />
-            ))}
-          {childFiles.length > 0 &&
-            childFiles.map((childFile) => (
-              <FileItem key={childFile.id} file={childFile} />
-            ))}
+        <div>
+          <div className="flex flex-wrap gap-4">
+            {childFolders?.length > 0 &&
+              childFolders.map((childFolder) => (
+                <FolderItem key={childFolder.id} folder={childFolder} />
+              ))}
+          </div>
+
+          {childFolders.length > 0 && childFiles.length > 0 && <div className="divider"></div>}
+
+          <div className="flex flex-wrap gap-4">
+            {childFiles.length > 0 &&
+              childFiles.map((childFile) => (
+                <FileItem key={childFile.id} file={childFile} />
+              ))}
+          </div>
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@ export default function Breadcrumbs({ currentFolder }) {
 
   return (
     <div className="breadcrumbs">
-      <ul>
+      <ul className="flex flex-wrap gap-y-1">
         {path.map((folder, index) => (
           <li key={folder.id}>
             <Link
