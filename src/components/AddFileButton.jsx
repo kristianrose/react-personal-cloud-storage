@@ -90,7 +90,7 @@ export default function AddFileButton({ currentFolder }) {
 
   return (
     <>
-      <label className="btn btn-primary">
+      <label className="btn btn-primary flex-grow">
         <FileUp />
         <span>Upload File</span>
         <input

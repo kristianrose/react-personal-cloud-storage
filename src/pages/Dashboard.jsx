@@ -22,7 +22,7 @@ export default function Dashboard() {
       <NavBar />
 
       <div className="p-4">
-        <div className="flex gap-4">
+        <div className="flex gap-4 max-w-3xl">
           <CreateFolderButton currentFolder={folder} />
           <AddFileButton currentFolder={folder} />
         </div>
