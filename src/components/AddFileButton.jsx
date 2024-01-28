@@ -105,7 +105,7 @@ export default function AddFileButton({ currentFolder }) {
             key={file.id}
             className="modal modal-open"
           >
-            <div className="modal-box flex w-96 flex-col">
+            <div className="modal-box flex min-w-64 flex-col">
               {file.name}
               <progress
                 className="progress progress-primary"
