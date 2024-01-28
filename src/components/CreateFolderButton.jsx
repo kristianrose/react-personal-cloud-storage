@@ -52,7 +52,7 @@ export default function CreateFolderButton({ currentFolder }) {
     <>
       <button
         disabled={loading}
-        className="btn btn-primary flex-grow"
+        className="btn btn-primary flex-grow overflow-hidden"
         onClick={() => openCreateEditFolderModal()}
       >
         {loading ? (
