@@ -9,7 +9,7 @@ import { AlertProvider } from "./contexts/AlertContext";
 
 function App() {
   return (
-    <div className="flex h-screen w-screen flex-col " data-theme="fantasy">
+    <div className="flex h-screen flex-col " data-theme="fantasy">
       <Router>
         <AlertProvider>
           <AuthProvider>

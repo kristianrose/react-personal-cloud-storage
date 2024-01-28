@@ -9,7 +9,7 @@ export default function FolderItem({ folder }) {
         pathname: `/folder/${folder.id}`,
         state: { folder: folder },
       }}
-      className="btn btn-outline flex max-w-96 flex-grow truncate"
+      className="btn btn-outline flex flex-grow truncate"
     >
       <FolderIcon />
       <span>{folder.name}</span>
