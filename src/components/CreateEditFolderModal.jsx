@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function CreateEditFolderModal({
@@ -16,15 +16,15 @@ export function CreateEditFolderModal({
     reset,
     formState: { errors },
   } = useForm();
+  const modalRef = useRef(null);
   const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
     if (showModal) {
-      document.getElementById("create-edit-folder-modal")?.showModal();
-      console.log("selectedFolder", selectedFolder);
+      modalRef?.current?.showModal();
     } else {
       reset();
-      document.getElementById("create-edit-folder-modal")?.close();
+      modalRef?.current?.close();
     }
   }, [showModal]);
 
@@ -35,7 +35,7 @@ export function CreateEditFolderModal({
   }, [selectedFolder]);
 
   return (
-    <dialog id="create-edit-folder-modal" className="modal">
+    <dialog ref={modalRef} className="modal">
       <div className="modal-box">
         <form
           method="dialog"

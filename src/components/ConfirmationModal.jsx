@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function ConfirmationModal({
   showModal,
@@ -8,11 +8,13 @@ export function ConfirmationModal({
   text,
   onConfirmation,
 }) {
+  const modalRef = useRef(null);
+  
   useEffect(() => {
     if (showModal) {
-      document.getElementById("confirmation-modal")?.showModal();
+      modalRef?.current?.showModal();
     } else {
-      document.getElementById("confirmation-modal")?.close();
+      modalRef?.current?.close();
     }
   }, [showModal]);
 
@@ -22,7 +24,7 @@ export function ConfirmationModal({
   };
 
   return (
-    <dialog id="confirmation-modal" className="modal">
+    <dialog ref={modalRef} className="modal">
       <div className="modal-box">
         {/* if there is a button in form, it will close the modal */}
         <button

@@ -103,7 +103,6 @@ export default function AddFileButton({ currentFolder }) {
         uploadingFiles.map((file) => (
           <dialog
             key={file.id}
-            id="add-file-modal"
             className="modal modal-open"
           >
             <div className="modal-box flex w-96 flex-col">
