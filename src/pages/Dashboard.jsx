@@ -68,6 +68,8 @@ export default function Dashboard() {
               <div className="divider">Create a folder or upload a file</div>
             )}
 
+            {childFolders?.length > 0 && <h5 className="mb-4">Folders:</h5>}
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {childFolders?.length > 0 &&
                 childFolders.map((childFolder) => (
@@ -78,6 +80,8 @@ export default function Dashboard() {
             {childFolders.length > 0 && childFiles.length > 0 && (
               <div className="divider"></div>
             )}
+
+            {childFiles?.length > 0 && <h5 className="mb-4">Files:</h5>}
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {childFiles.length > 0 &&
