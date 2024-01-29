@@ -89,9 +89,9 @@ export default function Signup() {
                       ? true
                       : "Password should be at-least 6 characters",
                   matchPattern: (value) =>
-                    /(?=.*[!@#$*])/.test(value) // /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*])/.test(value)
+                    /(?=.*[A-Z])/.test(value) // /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$*])/.test(value)
                       ? true
-                      : "Password should contain at least one special symbol", // "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol",
+                      : "Password should contain at least one uppercase letter", // "Password should contain at least one uppercase letter, lowercase letter, digit, and special symbol",
                 },
               }),
               placeholder: "Enter Password",
