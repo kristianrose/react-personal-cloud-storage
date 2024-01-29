@@ -1,11 +1,11 @@
 import { CentredContainer } from "../../components/auth/CentredContainer";
 import { AuthBottomRedirect } from "../../components/auth/AuthBottomRedirect";
 import { AuthHeader } from "../../components/auth/AuthHeader";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert } from "../../components/Alert";
 import { ALERT_CLASSES } from "../../constants";
 import { useAuth } from "../../contexts/AuthContext";
+import { useAlert } from "../../contexts/AlertContext";
 
 export default function ForgotPassword() {
   const {
@@ -13,9 +13,9 @@ export default function ForgotPassword() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { showAlert } = useAlert();
   const [showErrors, setShowErrors] = useState(false);
   const [loading, setLoading] = useState(false);
-  const alertRef = useRef(null);
   const { resetPassword } = useAuth(null);
 
   async function onSubmit(data) {
@@ -23,7 +23,7 @@ export default function ForgotPassword() {
       setLoading(true);
       await resetPassword(data.email);
       setLoading(false);
-      alertRef.current.showAlert(
+      showAlert(
         ALERT_CLASSES.SUCCESS,
         "Check your inbox for further instructions.",
       );
@@ -31,17 +31,12 @@ export default function ForgotPassword() {
       setTimeout(() => {
         setLoading(false);
       }, 300);
-      alertRef.current.showAlert(
-        ALERT_CLASSES.ERROR,
-        "Failed to reset the password.",
-      );
+      showAlert(ALERT_CLASSES.ERROR, "Failed to reset the password.");
     }
   }
 
   return (
     <CentredContainer>
-      <Alert ref={alertRef} />
-
       <AuthHeader
         title="Reset password"
         subtitle="Fill up the form to get instructions"

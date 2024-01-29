@@ -6,6 +6,8 @@ import { AuthHeader } from "../../components/auth/AuthHeader";
 import { AuthBottomRedirect } from "../../components/auth/AuthBottomRedirect";
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../components/auth/PasswordInput";
+import { useAlert } from "../../contexts/AlertContext";
+import { ALERT_CLASSES } from "../../constants";
 
 export default function Signup() {
   const {
@@ -14,40 +16,35 @@ export default function Signup() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { showAlert } = useAlert();
   const [showErrors, setShowErrors] = useState(false);
   const { signup } = useAuth();
-  const [alertError, setAlertError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   async function onSubmit(data) {
     try {
-      setAlertError(null);
       setLoading(true);
       await signup(data.email, data.password);
       setLoading(false);
       history.push("/");
-    } catch {
-      setAlertError("Failed to create an account.");
+    } catch (e) {
+      if (e.message.endsWith("(auth/email-already-in-use).")) {
+        showAlert(
+          ALERT_CLASSES.ERROR,
+          "The email address is already in use by another account.",
+        );
+      } else {
+        showAlert(ALERT_CLASSES.ERROR, "Failed to create an account.");
+      }
       setTimeout(() => {
         setLoading(false);
       }, 300);
-      setTimeout(() => {
-        setAlertError(null);
-      }, 1000);
     }
   }
 
   return (
     <CentredContainer>
-      {alertError && (
-        <div className="toast toast-center toast-middle z-50">
-          <div className="alert alert-error">
-            <span>Error! {alertError}</span>
-          </div>
-        </div>
-      )}
-
       <AuthHeader title="Sign Up" subtitle="Hi, Welcome 👋" />
 
       <form onSubmit={handleSubmit(onSubmit)}>

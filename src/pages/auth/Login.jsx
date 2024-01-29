@@ -6,6 +6,8 @@ import { AuthHeader } from "../../components/auth/AuthHeader";
 import { AuthBottomRedirect } from "../../components/auth/AuthBottomRedirect";
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../components/auth/PasswordInput";
+import { useAlert } from "../../contexts/AlertContext";
+import { ALERT_CLASSES } from "../../constants";
 
 export default function Login() {
   const {
@@ -13,40 +15,28 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { showAlert } = useAlert();
   const [showErrors, setShowErrors] = useState(false);
   const { login } = useAuth();
-  const [alertError, setAlertError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   async function onSubmit(data) {
     try {
-      setAlertError(null);
       setLoading(true);
       await login(data.email, data.password);
       setLoading(false);
       history.push("/");
     } catch {
-      setAlertError("Failed to log in.");
+      showAlert(ALERT_CLASSES.ERROR, "Failed to log in.");
       setTimeout(() => {
         setLoading(false);
       }, 300);
-      setTimeout(() => {
-        setAlertError(null);
-      }, 1000);
     }
   }
 
   return (
     <CentredContainer>
-      {alertError && (
-        <div className="toast toast-center toast-middle z-50">
-          <div className="alert alert-error">
-            <span>Error! {alertError}</span>
-          </div>
-        </div>
-      )}
-
       <AuthHeader title="Login" subtitle="Hi, Welcome back 👋" />
 
       {/* <div>
