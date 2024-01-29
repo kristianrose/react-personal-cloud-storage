@@ -16,7 +16,7 @@ export default function FileItem({ file, openConformationModal }) {
           className="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
         >
           <li>
-            <a href={file.url} target="_blank">
+            <a href={file.url} rel="noreferrer" target="_blank">
               View
             </a>
           </li>

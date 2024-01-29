@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ROOT_FOLDER } from "../hooks/useFolder";
 import { CreateEditFolderModal } from "./CreateEditFolderModal";
