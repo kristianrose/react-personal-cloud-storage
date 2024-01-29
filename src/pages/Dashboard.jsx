@@ -30,11 +30,11 @@ export default function Dashboard() {
     setShowConformationModal(true);
   };
 
-  const handleDeleteFile = () => {
+  const handleDeleteFile = async () => {
     const fileRef = storage.refFromURL(selectedFile.url);
 
-    fileRef.delete().finally(() => {
-      db.files
+    await fileRef.delete().finally(async () => {
+      await db.files
         .doc(selectedFile.id)
         .delete()
         .then(() => {
