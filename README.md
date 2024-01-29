@@ -4,8 +4,14 @@ JavaScript, React, Firebase
 
 ## Screenshots
 
-<p float="left">
-  <img src="./screenshots/Screenshot1.png" width="200"/>
-  <img src="./screenshots/Screenshot2.png" width="200"/>
-  <img src="./screenshots/Screenshot3.png" width="200"/>
-</p>
+<div style="display:flex;">
+  <img src="./screenshots/Screenshot-1.png" width="200"/>
+  <img src="./screenshots/Screenshot-2.png" width="200"/>
+  <img src="./screenshots/Screenshot-3.png" width="200"/>
+</div>
+
+<div style="display:flex;">
+  <img src="./screenshots/Screenshot-4.png" width="200"/>
+  <img src="./screenshots/Screenshot-5.png" width="200"/>
+  <img src="./screenshots/Screenshot-6.png" width="200"/>
+</div>
