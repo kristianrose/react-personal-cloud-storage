@@ -1,6 +1,6 @@
 # Personal Cloud Storage
 
-JavaScript, React, Firebase
+JavaScript, React.js, Firebase Auth, Firebase Database, Firebase Storage, Tailwind CSS, DaisyUI
 
 ## Screenshots
 
