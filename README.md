@@ -1,5 +1,10 @@
 # Personal Cloud Storage
 
+PersonalCloudStorage – a web application enabling users to securely create accounts and store
+files in a cloud-based storage system.
+
+## Tech Stack
+
 JavaScript, React.js, Firebase Auth, Firebase Database, Firebase Storage, Tailwind CSS, DaisyUI
 
 ## Screenshots
