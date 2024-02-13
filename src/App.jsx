@@ -2,6 +2,7 @@ import Signup from "./pages/auth/Signup";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -20,6 +21,7 @@ function App() {
                 path="/folder/:folderId"
                 component={Dashboard}
               />
+              <Route path="/home" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
               <Route path="/forgot-password" component={ForgotPassword} />

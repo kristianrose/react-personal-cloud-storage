@@ -1,13 +1,17 @@
 import { ClipboardCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function AuthHeader(props) {
   return (
     <>
       <div className="mb-4 flex items-center justify-center">
         <ClipboardCheck size={25} />
-        <span className="text-center text-xl font-semibold text-gray-700">
+        <Link
+          className="text-center text-xl font-semibold text-gray-700"
+          to="/home"
+        >
           Personal Cloud Storage
-        </span>
+        </Link>
       </div>
 
       <div className="my-5">
