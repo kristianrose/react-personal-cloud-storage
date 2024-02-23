@@ -49,7 +49,7 @@ export default function Dashboard() {
   };
 
   return (
-    <>
+    <div className="min-h-full bg-white">
       <NavBar />
 
       <div className="p-4">
@@ -108,6 +108,6 @@ export default function Dashboard() {
         text={`Are you sure you want to delete: ${selectedFile?.name}?`}
         onConfirmation={handleDeleteFile}
       />
-    </>
+    </div>
   );
 }
